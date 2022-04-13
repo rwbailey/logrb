@@ -5,9 +5,8 @@ import (
 	"os"
 	"path"
 
-	"google.golang.org/protobuf/proto"
-
 	api "github.com/rwbailey/logrb/api/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 type segment struct {
@@ -23,7 +22,7 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 		config:     c,
 	}
 
-	// var err error // why is this declaration needed?
+	var err error // why is this declaration needed?
 	storeFile, err := os.OpenFile(
 		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".store")),
 		os.O_RDWR|os.O_CREATE|os.O_APPEND,
@@ -36,7 +35,7 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 		return nil, err
 	}
 	indexFile, err := os.OpenFile(
-		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".store")),
+		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".index")),
 		os.O_RDWR|os.O_CREATE,
 		0644,
 	)
@@ -119,7 +118,7 @@ func (s *segment) Close() error {
 }
 
 func nearestMultiple(j, k uint64) uint64 {
-	if j >= 0 {
+	if j == 0 {
 		return (j / k) * k
 	}
 	return (j - k + 1) * k
