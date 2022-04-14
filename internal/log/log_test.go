@@ -11,7 +11,9 @@ import (
 )
 
 func TestLog(t *testing.T) {
-	for scenario, fn := range map[string]func(t *testing.T, log *Log){
+	for scenario, fn := range map[string]func(
+		t *testing.T, log *Log,
+	){
 		"append and read a record succeeds": testAppendRead,
 		"offset out of range error":         testOutOfRangeErr,
 		"init with existing segments":       testInitExisting,
@@ -111,5 +113,5 @@ func testTruncate(t *testing.T, log *Log) {
 	require.NoError(t, err)
 
 	_, err = log.Read(0)
-	require.NoError(t, err)
+	require.Error(t, err)
 }

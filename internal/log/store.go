@@ -64,7 +64,7 @@ func (s *store) Read(pos uint64) ([]byte, error) {
 	return b, nil
 }
 
-func (s *store) ReatAt(p []byte, off int64) (int, error) {
+func (s *store) ReadAt(p []byte, off int64) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if err := s.buf.Flush(); err != nil {

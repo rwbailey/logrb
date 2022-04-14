@@ -17,8 +17,9 @@ import (
 type Log struct {
 	mu sync.RWMutex
 
-	Dir           string
-	Config        Config
+	Dir    string
+	Config Config
+
 	activeSegment *segment
 	segments      []*segment
 }
@@ -34,6 +35,7 @@ func NewLog(dir string, c Config) (*Log, error) {
 		Dir:    dir,
 		Config: c,
 	}
+
 	return l, l.setup()
 }
 
@@ -58,7 +60,8 @@ func (l *Log) setup() error {
 		if err = l.newSegment(baseOffsets[i]); err != nil {
 			return err
 		}
-		// baseOffset contains dup for index and store so we skip the dup
+		// baseOffset contains dup for index and store so we skip
+		// the dup
 		i++
 	}
 	if l.segments == nil {
@@ -96,6 +99,16 @@ func (l *Log) Read(off uint64) (*api.Record, error) {
 		return nil, fmt.Errorf("offset out of range: %d", off)
 	}
 	return s.Read(off)
+}
+
+func (l *Log) newSegment(off uint64) error {
+	s, err := newSegment(l.Dir, off, l.Config)
+	if err != nil {
+		return err
+	}
+	l.segments = append(l.segments, s)
+	l.activeSegment = s
+	return nil
 }
 
 func (l *Log) Close() error {
@@ -175,14 +188,4 @@ func (o *originReader) Read(p []byte) (int, error) {
 	n, err := o.ReadAt(p, o.off)
 	o.off += int64(n)
 	return n, err
-}
-
-func (l *Log) newSegment(off uint64) error {
-	s, err := newSegment(l.Dir, off, l.Config)
-	if err != nil {
-		return err
-	}
-	l.segments = append(l.segments, s)
-	l.activeSegment = s
-	return nil
 }
