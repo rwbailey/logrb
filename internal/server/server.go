@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// var _ api.LogService = (*grpcServer)(nil)
+var _ api.LogServer = (*grpcServer)(nil)
 
 type CommitLog interface {
 	Append(*api.Record) (uint64, error)
@@ -28,12 +28,13 @@ func NewGRPCServer(config *Config) (*grpc.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	api.RegisterLogService(gsrv, &api.LogService{
-		Produce:       srv.Produce,
-		Consume:       srv.Consume,
-		ProduceStream: srv.ProduceStream,
-		ConsumeStream: srv.ConsumeStream,
-	})
+	api.RegisterLogServer(gsrv, srv)
+	// api.RegisterLogService(gsrv, &api.LogService{
+	// 	Produce:       srv.Produce,
+	// 	Consume:       srv.Consume,
+	// 	ProduceStream: srv.ProduceStream,
+	// 	ConsumeStream: srv.ConsumeStream,
+	// })
 	return gsrv, nil
 }
 
