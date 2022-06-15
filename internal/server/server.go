@@ -19,6 +19,7 @@ type Config struct {
 }
 
 type grpcServer struct {
+	api.UnimplementedLogServer
 	*Config
 }
 
