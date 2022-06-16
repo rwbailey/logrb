@@ -1,0 +1,15 @@
+{
+    "CN": "Richard CA",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "GB",
+            "L": "BIRMINGHAM",
+            "O": "Richard Bailey",
+            "OU": "Engineering"
+        }
+    ]
+}
